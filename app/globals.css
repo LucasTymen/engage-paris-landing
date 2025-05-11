@@ -24,3 +24,29 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Forcer l'affichage des variantes cachées */
+[class*="hidden-"] {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Optionnel : ajuster iframe si non visible */
+iframe {
+  min-height: 300px;
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.framer-c6mwwk {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+a.framer-c6mwwk * {
+  display: inline !important;
+  pointer-events: auto !important;
+}
