@@ -3,8 +3,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const GA_TRACKING_ID = "G-NR6L88V61P";
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -19,6 +17,8 @@ export const metadata: Metadata = {
   title: "Engage Paris 2025",
   description: "L'événement francophone du Customer Success",
 };
+
+const GA_ID = "G-NR6L88V61P";
 
 export default function RootLayout({
   children,
@@ -40,11 +40,13 @@ export default function RootLayout({
           src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"
         />
 
-        {/* ✅ Configuration de la bannière + GA loading conditionnel */}
+        {/* ✅ Cookie + GA Initializer */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               window.addEventListener("load", function(){
+                if (!window.cookieconsent) return;
+
                 window.cookieconsent.initialise({
                   palette: {
                     popup: { background: "#000" },
@@ -53,44 +55,44 @@ export default function RootLayout({
                   theme: "classic",
                   position: "bottom",
                   content: {
-                    message: "Ce site utilise des cookies pour améliorer l'expérience utilisateur.",
+                    message: "Ce site utilise des cookies pour améliorer votre expérience.",
                     dismiss: "Accepter",
                     link: "En savoir plus",
                     href: "/mentions-legales"
                   },
                   onInitialise: function (status) {
-                    if (status === 'allow') {
-                      enableGA();
-                    }
+                    if (status === 'allow') enableGA();
                   },
                   onStatusChange: function(status) {
-                    if (status === 'allow') {
-                      enableGA();
-                    }
+                    if (status === 'allow') enableGA();
                   }
                 });
               });
 
               function enableGA() {
+                if (window.gtag) return; // évite double init
+
                 const script = document.createElement('script');
-                script.async = true;
-                script.src = "https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}";
+                script.setAttribute('async', '');
+                script.src = "https://www.googletagmanager.com/gtag/js?id=${GA_ID}";
                 document.head.appendChild(script);
 
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 window.gtag = gtag;
                 gtag('js', new Date());
-                gtag('config', '${GA_TRACKING_ID}', {
+                gtag('config', '${GA_ID}', {
                   page_path: window.location.pathname,
                 });
+                console.log("✅ Google Analytics activé");
               }
             `,
           }}
         />
       </head>
-
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         {children}
       </body>
     </html>
