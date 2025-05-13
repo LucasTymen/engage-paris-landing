@@ -28,24 +28,6 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* ✅ Google Analytics tag visible pour détection */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_ID}', {
-                page_path: window.location.pathname,
-              });
-            `,
-          }}
-        />
-
         {/* ✅ Cookie Consent CSS */}
         <link
           rel="stylesheet"
@@ -58,7 +40,7 @@ export default function RootLayout({
           src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"
         />
 
-        {/* ✅ Configuration de la bannière Cookie */}
+        {/* ✅ Configuration Cookie + Injection GA après consentement */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -77,9 +59,35 @@ export default function RootLayout({
                     dismiss: "Accepter",
                     link: "En savoir plus",
                     href: "/mentions-legales"
+                  },
+                  onInitialise: function (status) {
+                    if (status === 'allow') enableGA();
+                  },
+                  onStatusChange: function(status) {
+                    if (status === 'allow') enableGA();
                   }
                 });
               });
+
+              function enableGA() {
+                if (window.gtag) return;
+
+                const gaScript = document.createElement('script');
+                gaScript.setAttribute('async', '');
+                gaScript.src = "https://www.googletagmanager.com/gtag/js?id=${GA_ID}";
+                document.head.appendChild(gaScript);
+
+                gaScript.onload = function () {
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  window.gtag = gtag;
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}', {
+                    page_path: window.location.pathname,
+                  });
+                  console.log("✅ Google Analytics chargé après consentement");
+                }
+              }
             `,
           }}
         />
