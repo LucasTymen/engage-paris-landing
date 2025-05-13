@@ -1,11 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { FiPlus, FiMinus } from "react-icons/fi";
-import { useRef } from "react";
 import FaqCharacter from "@/public/assets/faqCharacter";
-import FaqCharacterParallax from "../FaqCharacterParallax";
 
 type FaqItem = {
   question: string;
@@ -40,28 +38,32 @@ const faqData: FaqItem[] = [
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   const toggle = (i: number) => {
     setOpenIndex(openIndex === i ? null : i);
   };
 
-  // Animation du personnage
+  // Parallax pour le personnage
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], ["0px", "-8px", "0px"]);
+  const y = useTransform(scrollYProgress, [0, 0.5, 1], ["0px", "0px", "0px"]);
 
   return (
-    <section id="faq" className="relative bg-[#777] text-black py-28 px-4 overflow-hidden">
+    <section
+      id="faq"
+      className="relative bg-[#777] text-black py-28 px-4 overflow-hidden"
+      ref={ref}
+    >
       {/* 👤 Personnage animé posé sur la FAQ */}
       <motion.div
-        ref={ref}
         style={{ y }}
-        className="w-[140px] mx-auto -mt-32 mb-[-2rem] z-10 relative"
+        className="w-[140px] mx-auto -mt-32 mb-[-2rem] z-10 relative pointer-events-none"
         aria-hidden
       >
-      <FaqCharacter className="w-full h-auto" />
+        <FaqCharacter className="w-full h-auto" />
       </motion.div>
 
       <div className="max-w-4xl mx-auto">
@@ -84,7 +86,16 @@ export default function Faq() {
 
               <AnimatePresence initial={false}>
                 {openIndex === i && (
-                  <FaqCharacterParallax />
+                  <motion.div
+                    key={`faq-${i}`}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="px-6 pb-4"
+                  >
+                    <p>{item.answer}</p>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
