@@ -1,20 +1,16 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// Google Fonts config
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
-// ✅ Google Analytics 4 ID
 const GA_ID = "G-NR6L88V61P";
 
 export const metadata: Metadata = {
@@ -22,27 +18,42 @@ export const metadata: Metadata = {
   description: "L'événement francophone du Customer Success",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
       <head>
-        {/* ✅ Cookie Consent CSS (CDN) */}
+        {/* ✅ Google Analytics: Script visible pour détection automatique par Google */}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+        ></script>
+
+        {/* ✅ Gtag initialisation bloquée jusqu’au consentement */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // GA tag bloqué par défaut
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){ dataLayer.push(arguments); }
+              // La ligne ci-dessous est volontairement désactivée :
+              // gtag('config', '${GA_ID}');
+            `,
+          }}
+        />
+
+        {/* ✅ CookieConsent CSS */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"
         />
 
-        {/* ✅ Cookie Consent Script (CDN) */}
+        {/* ✅ CookieConsent JS */}
         <script
           defer
           src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"
-        />
+        ></script>
 
-        {/* ✅ Cookie Consent Init + GA activation (déclenché après consentement) */}
+        {/* ✅ Bannière Cookie + Activation conditionnelle de GA */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -62,39 +73,24 @@ export default function RootLayout({
                     link: "En savoir plus",
                     href: "/mentions-legales"
                   },
-                  // ✅ Déclenche GA uniquement après acceptation
                   onInitialise: function (status) {
-                    if (status === 'allow') enableGA();
+                    if (status === 'allow') triggerGA();
                   },
                   onStatusChange: function(status) {
-                    if (status === 'allow') enableGA();
+                    if (status === 'allow') triggerGA();
                   }
                 });
-              });
 
-              // ✅ Injection de GA4 (gtag.js) uniquement après consentement
-              function enableGA() {
-                if (window.gtag) return; // évite double init
-
-                const gaScript = document.createElement('script');
-                gaScript.setAttribute('async', '');
-                gaScript.src = "https://www.googletagmanager.com/gtag/js?id=${GA_ID}";
-                document.head.appendChild(gaScript);
-
-                // ⚡️ Une fois chargé, initialise GA
-                gaScript.onload = function () {
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){ dataLayer.push(arguments); }
-                  window.gtag = gtag;
-
+                function triggerGA() {
+                  if (window.gtagInitialized) return;
+                  window.gtagInitialized = true;
                   gtag('js', new Date());
                   gtag('config', '${GA_ID}', {
                     page_path: window.location.pathname,
                   });
-
-                  console.log("✅ Google Analytics chargé après consentement");
-                };
-              }
+                  console.log("✅ GA déclenché après consentement");
+                }
+              });
             `,
           }}
         />
