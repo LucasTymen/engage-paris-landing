@@ -25,4 +25,5 @@ export default function Page() {
       <SponsorsCarousel />     {/* 🆕 Carousel sponsors */}
     </>
   );
+  
 }
