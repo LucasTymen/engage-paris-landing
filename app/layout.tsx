@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const GA_ID = "G-NR6L88V61P";
+
 export const metadata: Metadata = {
   title: "Engage Paris 2025",
   description: "L'événement francophone du Customer Success",
 };
-
-const GA_ID = "G-NR6L88V61P";
 
 export default function RootLayout({
   children,
@@ -28,19 +28,37 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
+        {/* ✅ Google Analytics tag visible pour détection */}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_ID}', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
+
         {/* ✅ Cookie Consent CSS */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"
         />
 
-        {/* ✅ Cookie Consent Script */}
+        {/* ✅ Cookie Consent JS */}
         <script
           defer
           src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"
         />
 
-        {/* ✅ Cookie + GA Initializer */}
+        {/* ✅ Configuration de la bannière Cookie */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -59,33 +77,9 @@ export default function RootLayout({
                     dismiss: "Accepter",
                     link: "En savoir plus",
                     href: "/mentions-legales"
-                  },
-                  onInitialise: function (status) {
-                    if (status === 'allow') enableGA();
-                  },
-                  onStatusChange: function(status) {
-                    if (status === 'allow') enableGA();
                   }
                 });
               });
-
-              function enableGA() {
-                if (window.gtag) return; // évite double init
-
-                const script = document.createElement('script');
-                script.setAttribute('async', '');
-                script.src = "https://www.googletagmanager.com/gtag/js?id=${GA_ID}";
-                document.head.appendChild(script);
-
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                window.gtag = gtag;
-                gtag('js', new Date());
-                gtag('config', '${GA_ID}', {
-                  page_path: window.location.pathname,
-                });
-                console.log("✅ Google Analytics activé");
-              }
             `,
           }}
         />
