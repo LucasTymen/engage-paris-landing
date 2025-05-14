@@ -1,14 +1,17 @@
-// ✅ app/layout.tsx
+// app/layout.tsx
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// Font configuration
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-
-// ✅ GA4 ID
-const GA_ID = "G-NR6L88V61P";
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Engage Paris 2025",
@@ -23,40 +26,23 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* ✅ Balise Google officielle directement après <head> */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-        ></script>
-        <script
-          // ✅ Script gtag directement dans le head, activé immédiatement
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_ID}', {
-                page_path: window.location.pathname,
-              });
-            `,
-          }}
-        />
-
-        {/* ✅ CookieConsent stylesheet */}
+        {/* ✅ CookieConsent CSS */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"
         />
-        {/* ✅ CookieConsent script */}
+
+        {/* ✅ CookieConsent Script */}
         <script
           defer
           src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"
         />
-        {/* ✅ Consent config */}
+
+        {/* ✅ RGPD Consent config + GTM injection conditionnelle */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              window.addEventListener("load", function() {
+              window.addEventListener("load", function () {
                 if (!window.cookieconsent) return;
 
                 window.cookieconsent.initialise({
@@ -71,8 +57,31 @@ export default function RootLayout({
                     dismiss: "Accepter",
                     link: "En savoir plus",
                     href: "/mentions-legales"
+                  },
+                  onInitialise: function (status) {
+                    if (status === 'allow') {
+                      injectGTM();
+                    }
+                  },
+                  onStatusChange: function (status) {
+                    if (status === 'allow') {
+                      injectGTM();
+                    }
                   }
                 });
+
+                function injectGTM() {
+                  (function(w,d,s,l,i){
+                    w[l]=w[l]||[];
+                    w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+                    var f=d.getElementsByTagName(s)[0],
+                        j=d.createElement(s),
+                        dl=l!='dataLayer'?'&l='+l:'';
+                    j.async=true;
+                    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+                    f.parentNode.insertBefore(j,f);
+                  })(window,document,'script','dataLayer','GTM-PDVKS78C');
+                }
               });
             `,
           }}
@@ -80,6 +89,15 @@ export default function RootLayout({
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* ✅ GTM noscript fallback – doit toujours être là */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-PDVKS78C"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
         {children}
       </body>
     </html>
