@@ -33,7 +33,7 @@ export default function Header() {
 
       {/* ✅ Titre principal */}
       <h1 className="text-3xl md:text-5xl font-bold mt-2 mb-1">
-        Journées Engage Paris
+        Conférence Customer Success Engage Paris
       </h1>
 
       {/* ✅ Séparateur */}
