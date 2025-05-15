@@ -1,10 +1,9 @@
 // ✅ app/mentions-legales/page.tsx
-
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mentions Légales - Engage Paris 2025",
-  description: "Consultez les mentions légales de l'événement Engage Paris 2025.",
+  title: "Mentions légales - Engage Paris 2025",
+  description: "Informations légales du site Engage Paris 2025, incluant éditeur, hébergeur, droits et protection des données.",
 };
 
 export default function MentionsLegalesPage() {
@@ -15,38 +14,38 @@ export default function MentionsLegalesPage() {
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Éditeur du site</h2>
         <p>
-          Engage Paris est édité par [Nom de l'entreprise ou de l'association], situé à [adresse], immatriculée sous le numéro [SIREN/SIRET].
+          Engage Paris est édité par [Votre société / association], immatriculée au RCS sous le numéro [123 456 789], dont le siège est situé à [adresse postale].
         </p>
       </section>
 
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Hébergement</h2>
         <p>
-          Le site est hébergé par Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA.
+          Le site est hébergé par Vercel Inc. — 440 N Barranca Ave #4133, Covina, CA 91723, USA.
         </p>
       </section>
 
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Propriété intellectuelle</h2>
         <p>
-          Tous les contenus présents sur ce site (textes, images, vidéos, logos, etc.) sont la propriété exclusive de leurs auteurs ou partenaires, sauf mention contraire.
+          L’ensemble des contenus présents sur le site (textes, images, vidéos, logos, etc.) sont protégés par le droit d’auteur et appartiennent à Engage Paris ou ses partenaires.
         </p>
       </section>
 
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Données personnelles</h2>
         <p>
-          Aucune donnée personnelle n’est collectée sans votre consentement. Vous pouvez consulter notre politique de confidentialité ou nous contacter pour toute demande relative à vos données.
+          Aucune donnée personnelle n’est collectée sans votre consentement. Vous disposez d’un droit d’accès, de rectification et de suppression. Contactez-nous à :{" "}
+          <a href="mailto:contact@engageparis.com" className="text-blue-600 underline">
+            contact@engageparis.com
+          </a>
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold mb-2">Contact</h2>
+        <h2 className="text-xl font-semibold mb-2">Cookies</h2>
         <p>
-          Pour toute question, vous pouvez nous contacter à l’adresse suivante :{" "}
-          <a href="mailto:contact@engageparis.com" className="text-blue-600 underline">
-            contact@engageparis.com
-          </a>
+          Ce site utilise des cookies à des fins de mesure d’audience. Vous pouvez à tout moment modifier votre consentement via le gestionnaire de cookies.
         </p>
       </section>
     </main>
