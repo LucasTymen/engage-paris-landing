@@ -1,3 +1,11 @@
+/**
+ * The function `Page` imports and renders various components to structure a landing page in a
+ * TypeScript React application.
+ * @returns The `Page` function is being returned, which is a React component that renders a series of
+ * components in a specific order to structure the landing page. The components being rendered include
+ * `Header`, `Adn`, `Articles`, `GalleryCarousel`, `Intervenants`, `Questionnaire`, `Faq`,
+ * `CalendlyCTA`, and `SponsorsCarousel`.
+ */
 // ✅ Import de tous les composants depuis le dossier /components
 import Header from "@/components/Header";
 import Adn from "@/components/Adn";
