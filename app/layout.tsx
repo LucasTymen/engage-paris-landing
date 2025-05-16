@@ -1,9 +1,10 @@
-// app/layout.tsx
+// ✅ app/layout.tsx
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+// ✅ Fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,6 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// ✅ Métadonnées SEO
 export const metadata: Metadata = {
   title: "Engage Paris 2025",
   description: "L'événement francophone du Customer Success",
@@ -26,19 +28,28 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* ✅ CookieConsent CSS */}
+        {/* ✅ CSS de la bannière RGPD */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"
         />
 
-        {/* ✅ CookieConsent Script */}
+        {/* ✅ Initialisation manuelle du dataLayer pour GA4 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+            `,
+          }}
+        />
+
+        {/* ✅ Script CookieConsent (RGPD) */}
         <script
           defer
           src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"
         />
 
-        {/* ✅ RGPD Consent config + GTM injection conditionnelle */}
+        {/* ✅ Script de configuration CookieConsent + injection conditionnelle de GTM */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -71,16 +82,14 @@ export default function RootLayout({
                 });
 
                 function injectGTM() {
-                  (function(w,d,s,l,i){
-                    w[l]=w[l]||[];
-                    w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
-                    var f=d.getElementsByTagName(s)[0],
-                        j=d.createElement(s),
-                        dl=l!='dataLayer'?'&l='+l:'';
-                    j.async=true;
-                    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-                    f.parentNode.insertBefore(j,f);
-                  })(window,document,'script','dataLayer','GTM-PDVKS78C');
+                  if (document.getElementById('gtm-script')) return;
+
+                  var f = document.getElementsByTagName('script')[0];
+                  var j = document.createElement('script');
+                  j.id = 'gtm-script';
+                  j.async = true;
+                  j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-PDVKS78C';
+                  f.parentNode.insertBefore(j, f);
                 }
               });
             `,
@@ -89,7 +98,7 @@ export default function RootLayout({
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* ✅ GTM noscript fallback – doit toujours être là */}
+        {/* ✅ GTM noscript fallback (important pour users sans JS) */}
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-PDVKS78C"
@@ -98,6 +107,8 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
+
+        {/* ✅ Contenu de la landing page */}
         {children}
       </body>
     </html>
