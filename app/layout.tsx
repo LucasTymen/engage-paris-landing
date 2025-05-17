@@ -4,17 +4,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// ✅ Fonts
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-// ✅ Métadonnées SEO
 export const metadata: Metadata = {
   title: "Engage Paris 2025",
   description: "L'événement francophone du Customer Success",
@@ -28,28 +20,26 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* ✅ CSS de la bannière RGPD */}
+        {/* ✅ CSS pour la bannière RGPD */}
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"
         />
 
-        {/* ✅ Initialisation manuelle du dataLayer pour GA4 */}
+        {/* ✅ Initialisation manuelle du dataLayer */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-            `,
+            __html: `window.dataLayer = window.dataLayer || [];`,
           }}
         />
 
-        {/* ✅ Script CookieConsent (RGPD) */}
+        {/* ✅ Script CookieConsent */}
         <script
           defer
           src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"
         />
 
-        {/* ✅ Script de configuration CookieConsent + injection conditionnelle de GTM */}
+        {/* ✅ Consentement + injection GTM + injection Google Ads (AW tag) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -72,24 +62,44 @@ export default function RootLayout({
                   onInitialise: function (status) {
                     if (status === 'allow') {
                       injectGTM();
+                      injectGoogleAds();
                     }
                   },
                   onStatusChange: function (status) {
                     if (status === 'allow') {
                       injectGTM();
+                      injectGoogleAds();
                     }
                   }
                 });
 
                 function injectGTM() {
                   if (document.getElementById('gtm-script')) return;
-
                   var f = document.getElementsByTagName('script')[0];
                   var j = document.createElement('script');
                   j.id = 'gtm-script';
                   j.async = true;
                   j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-PDVKS78C';
                   f.parentNode.insertBefore(j, f);
+                }
+
+                function injectGoogleAds() {
+                  if (document.getElementById('google-ads-script')) return;
+                  
+                  var s1 = document.createElement('script');
+                  s1.async = true;
+                  s1.id = 'google-ads-script';
+                  s1.src = "https://www.googletagmanager.com/gtag/js?id=AW-17074652075";
+                  document.head.appendChild(s1);
+
+                  s1.onload = function () {
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    window.gtag = gtag;
+                    gtag('js', new Date());
+                    gtag('config', 'AW-17074652075');
+                    console.log("✅ Google Ads tag chargé après consentement");
+                  };
                 }
               });
             `,
@@ -98,17 +108,15 @@ export default function RootLayout({
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* ✅ GTM noscript fallback (important pour users sans JS) */}
+        {/* ✅ GTM noscript fallback */}
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-PDVKS78C"
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
+          />
         </noscript>
-
-        {/* ✅ Contenu de la landing page */}
         {children}
       </body>
     </html>
