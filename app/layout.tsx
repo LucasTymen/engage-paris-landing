@@ -16,22 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <head>
-        {/* ✅ Google Analytics (gtag.js) for G-NR6L88V61P */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-NR6L88V61P"
-          strategy="afterInteractive"
-        />
-        <Script id="ga-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-NR6L88V61P');
-          `}
-        </Script>
-
-        {/* ✅ Google Tag Manager HEAD */}
-        <Script id="gtm-init" strategy="afterInteractive">
+        {/* ✅ Google Tag Manager (GTM-PDVKS78C) - HEAD SCRIPT */}
+        <Script id="gtm-script" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];
               w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
@@ -40,6 +26,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
               f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-PDVKS78C');
+          `}
+        </Script>
+
+        {/* ✅ Google Analytics gtag.js (G-NR6L88V61P) → utile si utilisé **indépendamment** de GTM */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-NR6L88V61P"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-NR6L88V61P');
           `}
         </Script>
       </head>
@@ -60,4 +60,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
- 
