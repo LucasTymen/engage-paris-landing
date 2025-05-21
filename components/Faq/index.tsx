@@ -57,14 +57,7 @@ export default function Faq() {
       className="relative bg-[#777] text-black py-28 px-4 overflow-hidden"
       ref={ref}
     >
-      {/* 👤 Personnage animé posé sur la FAQ */}
-      <motion.div
-        style={{ y }}
-        className="w-[140px] mx-auto -mt-32 mb-[-2rem] z-10 relative pointer-events-none"
-        aria-hidden
-      >
-        <FaqCharacter className="w-full h-auto" />
-      </motion.div>
+      
 
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-12">FAQ</h2>
@@ -84,20 +77,7 @@ export default function Faq() {
                 </span>
               </button>
 
-              <AnimatePresence initial={false}>
-                {openIndex === i && (
-                  <motion.div
-                    key={`faq-${i}`}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="px-6 pb-4"
-                  >
-                    <p>{item.answer}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              
             </div>
           ))}
         </div>
