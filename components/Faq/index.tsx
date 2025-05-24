@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { FiPlus, FiMinus } from "react-icons/fi";
-import FaqCharacter from "@/public/assets/faqCharacter";
 
+// ✅ Structure des données
 type FaqItem = {
   question: string;
   answer: string;
 };
 
+// ✅ Données de la FAQ
 const faqData: FaqItem[] = [
   {
     question: "Pourquoi cet événement est fait pour vous ?",
@@ -43,22 +44,12 @@ export default function Faq() {
     setOpenIndex(openIndex === i ? null : i);
   };
 
-  // Parallax pour le personnage
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], ["0px", "0px", "0px"]);
-
   return (
     <section
       id="faq"
-      className="relative bg-[#777] text-black py-28 px-4 overflow-hidden"
-      ref={ref}
+      className="relative bg-[#777] text-black py-28 px-4"
     >
-      
-
+      {/* ✅ Contenu de la FAQ sans personnage */}
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-12">FAQ</h2>
         <div className="space-y-4">
@@ -77,7 +68,20 @@ export default function Faq() {
                 </span>
               </button>
 
-              
+              <AnimatePresence initial={false}>
+                {openIndex === i && (
+                  <motion.div
+                    key={`faq-${i}`}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="px-6 pb-4"
+                  >
+                    <p>{item.answer}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>
